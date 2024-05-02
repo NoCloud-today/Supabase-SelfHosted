@@ -1,0 +1,16 @@
+{$API_EXTERNAL_URL} {
+    reverse_proxy kong:8000
+}
+
+{$DASHBOARD_URL} {
+    handle /storage/* {
+        reverse_proxy kong:8000
+    }
+
+    handle /* {
+        reverse_proxy studio:3000
+        basicauth {
+            {$DASHBOARD_USERNAME} {$DASHBOARD_PASSWORD}
+        }
+    }
+}
