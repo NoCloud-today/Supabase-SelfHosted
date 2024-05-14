@@ -1,16 +1,29 @@
-{$API_EXTERNAL_URL} {
+(secure) {
+  forward_auth {args.0} authelia:9091 {
+    uri /api/verify?rd=https://auth.{$DOMAIN_NAME}
+    copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
+  }
+}
+
+auth.{$DOMAIN_NAME} {
+    reverse_proxy authelia:9091
+}
+
+supabase.{$DOMAIN_NAME} {
     reverse_proxy kong:8000
 }
 
-{$DASHBOARD_URL} {
+dashboard.{$DOMAIN_NAME} {
     handle /storage/* {
         reverse_proxy kong:8000
     }
 
+    handle /auth/* {
+        reverse_proxy kong:8000
+    }
+
     handle /* {
+        import secure *
         reverse_proxy studio:3000
-        basicauth {
-            {$DASHBOARD_USERNAME} {$DASHBOARD_PASSWORD}
-        }
     }
 }

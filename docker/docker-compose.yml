@@ -52,6 +52,9 @@ services:
     restart: unless-stopped
     # https://unix.stackexchange.com/a/294837
     entrypoint: bash -c 'eval "echo \"$$(cat ~/temp.yml)\"" > ~/kong.yml && /docker-entrypoint.sh kong docker-start'
+    ports:
+      - 127.0.0.1:${KONG_HTTP_PORT}:8000/tcp
+      - 127.0.0.1:${KONG_HTTPS_PORT}:8443/tcp
     depends_on:
       analytics:
         condition: service_healthy
@@ -290,9 +293,9 @@ services:
       - -c
       - log_min_messages=fatal # prevents Realtime polling queries from appearing in logs
     restart: unless-stopped
-#    ports:
-#      # Pass down internal port because it's set dynamically by other services
-#      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    ports:
+      # Pass down internal port because it's set dynamically by other services
+      - 127.0.0.1:${POSTGRES_PORT}:${POSTGRES_PORT}
     environment:
       POSTGRES_HOST: /var/run/postgresql
       PGPORT: ${POSTGRES_PORT}
@@ -443,14 +446,22 @@ services:
       - 443:443
       - 443:443/udp
     environment:
-      API_EXTERNAL_URL: ${API_EXTERNAL_URL}
-      DASHBOARD_URL: ${SUPABASE_PUBLIC_URL}
+      DOMAIN_NAME: ${DOMAIN_NAME}
       DASHBOARD_USERNAME: ${DASHBOARD_USERNAME}
       DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
     volumes:
       - ./volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
       - ./volumes/caddy/config:/config:Z
+
+  authelia:
+    container_name: authelia
+    image: authelia/authelia
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:9091:9091
+    volumes:
+      - ./volumes/authelia/config:/config
 
 volumes:
   db-config:
