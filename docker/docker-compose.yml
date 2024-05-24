@@ -447,8 +447,6 @@ services:
       - 443:443/udp
     environment:
       DOMAIN_NAME: ${DOMAIN_NAME}
-      DASHBOARD_USERNAME: ${DASHBOARD_USERNAME}
-      DASHBOARD_PASSWORD: ${DASHBOARD_PASSWORD}
     volumes:
       - ./volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
