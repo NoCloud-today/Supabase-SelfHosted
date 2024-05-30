@@ -1,19 +1,19 @@
 (secure) {
   forward_auth {args[0]} authelia:9091 {
-    uri /api/verify?rd=https://auth.{$DOMAIN_NAME}
+    uri /api/verify?rd=https://{$AUTHELIA_DOMAIN}
     copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
   }
 }
 
-auth.{$DOMAIN_NAME} {
+{$AUTHELIA_DOMAIN} {
     reverse_proxy authelia:9091
 }
 
-supabase.{$DOMAIN_NAME} {
+{$API_EXTERNAL_DOMAIN} {
     reverse_proxy kong:8000
 }
 
-dashboard.{$DOMAIN_NAME} {
+{$DASHBOARD_DOMAIN} {
     handle /storage/* {
         reverse_proxy kong:8000
     }

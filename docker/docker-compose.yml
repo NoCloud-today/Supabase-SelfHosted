@@ -446,7 +446,9 @@ services:
       - 443:443
       - 443:443/udp
     environment:
-      DOMAIN_NAME: ${DOMAIN_NAME}
+      AUTHELIA_DOMAIN: ${AUTHELIA_DOMAIN}
+      API_EXTERNAL_DOMAIN: ${API_EXTERNAL_DOMAIN}
+      DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
       - ./volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
@@ -458,6 +460,11 @@ services:
     restart: unless-stopped
     ports:
       - 127.0.0.1:9091:9091
+    environment:
+      X_AUTHELIA_CONFIG_FILTERS: expand-env,template
+      BASE_DOMAIN: ${BASE_DOMAIN}
+      AUTHELIA_DOMAIN: ${AUTHELIA_DOMAIN}
+      DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
       - ./volumes/authelia/config:/config
 

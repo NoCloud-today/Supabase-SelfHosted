@@ -15,3 +15,6 @@ docker compose up -d # в фоне
 Дефолтные логин и пароль из .env:
 - supabase
 - this_password_is_insecure_and_should_be_updated  
+
+TODO:  
+ /-- Поправить шаблон для   приглашения пользователя по электронной почте - ссылка с подтверждением начинается с http://kong
