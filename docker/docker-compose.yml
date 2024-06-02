@@ -437,6 +437,21 @@ services:
       IMGPROXY_USE_ETAG: "true"
       IMGPROXY_ENABLE_WEBP_DETECTION: ${IMGPROXY_ENABLE_WEBP_DETECTION}
 
+  admin:
+    container_name: supabase-admin
+    image: ghcr.io/mhlvdenis/supabase-admin
+    restart: always
+    expose:
+      - 8000
+    volumes:
+      - ./.env:/supabase/config/.env
+      - ./env_bkp:/supabase/config/env_bkp
+      - admin-upload-data:/app/uploaded_files
+      - admin-web-static:/app/.web/_static
+    environment:
+      ENV_FILE_PATH: /supabase/config/.env
+      ENV_BKP_DIR: /supabase/config/env_bkp
+
   caddy:
     container_name: supabase-caddy
     image: caddy:latest
@@ -446,13 +461,17 @@ services:
       - 443:443
       - 443:443/udp
     environment:
-      AUTHELIA_DOMAIN: ${AUTHELIA_DOMAIN}
+      ADMIN_DOMAIN: ${ADMIN_DOMAIN}
+      DASHBOARD_AUTH_DOMAIN: ${DASHBOARD_AUTH_DOMAIN}
       API_EXTERNAL_DOMAIN: ${API_EXTERNAL_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
       - ./volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
       - ./volumes/caddy/config:/config:Z
+      - admin-web-static:/srv
+    depends_on:
+      - admin
 
   authelia:
     container_name: authelia
@@ -463,10 +482,12 @@ services:
     environment:
       X_AUTHELIA_CONFIG_FILTERS: expand-env,template
       BASE_DOMAIN: ${BASE_DOMAIN}
-      AUTHELIA_DOMAIN: ${AUTHELIA_DOMAIN}
+      DASHBOARD_AUTH_DOMAIN: ${DASHBOARD_AUTH_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
       - ./volumes/authelia/config:/config
 
 volumes:
   db-config:
+  admin-upload-data:
+  admin-web-static:

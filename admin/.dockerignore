@@ -1,0 +1,7 @@
+.web
+.git
+__pycache__/*
+Dockerfile
+docker-compose.yaml
+uploaded_files
+test_data

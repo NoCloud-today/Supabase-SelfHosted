@@ -1,5 +1,6 @@
 volumes/db/data
 volumes/storage
 .env
+env_bkp
 test.http
 docker-compose.override.yml

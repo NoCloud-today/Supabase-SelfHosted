@@ -86,7 +86,7 @@ access_control:
   default_policy: deny
   rules:
     - domain:
-        - $AUTHELIA_DOMAIN
+        - $DASHBOARD_AUTH_DOMAIN
       policy: bypass
     - domain: $DASHBOARD_DOMAIN
       policy: one_factor
