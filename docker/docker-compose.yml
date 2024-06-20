@@ -1,9 +1,3 @@
-# Usage
-#   Start:          docker compose up
-#   With helpers:   docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml up
-#   Stop:           docker compose down
-#   Destroy:        docker compose -f docker-compose.yml -f ./dev/docker-compose.dev.yml down -v --remove-orphans
-
 name: supabase
 version: "3.8"
 
@@ -440,9 +434,10 @@ services:
   admin:
     container_name: supabase-admin
     image: ghcr.io/mhlvdenis/supabase-admin
+    # build: ../admin
     restart: always
-    expose:
-      - 8000
+    ports:
+      - 127.0.0.1:30239:8000
     volumes:
       - ./.env:/supabase/config/.env
       - ./env_bkp:/supabase/config/env_bkp
@@ -460,13 +455,14 @@ services:
       - 80:80
       - 443:443
       - 443:443/udp
+    network_mode: ${CADDY_NETWORK_MODE}
     environment:
       ADMIN_DOMAIN: ${ADMIN_DOMAIN}
       DASHBOARD_AUTH_DOMAIN: ${DASHBOARD_AUTH_DOMAIN}
       API_EXTERNAL_DOMAIN: ${API_EXTERNAL_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
-      - ./volumes/caddy/Caddyfile:/etc/caddy/Caddyfile:Z
+      - ${CADDY_CONFIG_FILE}:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
       - ./volumes/caddy/config:/config:Z
       - admin-web-static:/srv
