@@ -34,9 +34,7 @@ RUN mv /tmp/_static .web/_static
 # Stage 2: copy artifacts into slim image
 FROM python:3.11-slim
 WORKDIR /app
-RUN adduser --disabled-password --home /app reflex
-COPY --chown=reflex --from=init /app /app
-USER reflex
+COPY --from=init /app /app
 ENV PATH="/app/.venv/bin:$PATH"
 
 # Needed until Reflex properly passes SIGTERM on backend.

@@ -1,2 +1,2 @@
-reflex==0.5.2
-docker
+reflex==0.5.4
+python-dotenv

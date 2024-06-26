@@ -1,8 +1,8 @@
 (secure) {
-  forward_auth {args[0]} authelia:9091 {
-    uri /api/verify?rd=https://{$DASHBOARD_AUTH_DOMAIN}
-    copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
-  }
+    forward_auth {args[0]} authelia:9091 {
+        uri /api/verify?rd=https://{$DASHBOARD_AUTH_DOMAIN}
+        copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
+    }
 }
 
 {$ADMIN_DOMAIN} {

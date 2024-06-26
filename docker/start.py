@@ -1,5 +1,5 @@
-import os
 import requests
+import subprocess
 from dotenv import dotenv_values
 
 
@@ -18,6 +18,16 @@ if __name__ == "__main__":
         for key, value in env.items():
             f.write(f'{key}=\"{value}\"\n')
 
-    os.system('docker compose up -d admin caddy')
+    subprocess.run(['mkdir', 'env_bkp'])
+
+    subprocess.run(['docker', 'compose', 'pull'])
+    subprocess.run(['docker', 'compose', 'up', '-d', 'admin', 'caddy'])
 
     print(f'Admin run on https://{ip}')
+
+    subprocess.run(['chmod', '+x', 'restarter.sh'])
+
+    try:
+        subprocess.run(['./restarter.sh'])
+    except KeyboardInterrupt:
+        pass

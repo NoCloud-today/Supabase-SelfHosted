@@ -8,10 +8,10 @@ env_bkp_dir = os.getenv('ENV_BKP_DIR')
 
 def load_env_dict(version: int | None = None) -> dict:
     if version is None:
-        return dotenv_values(dotenv_path=env_file_path)
+        return dotenv_values(dotenv_path=env_file_path, interpolate=False)
     else:
         target_env_file_path = os.path.join(env_bkp_dir, f'.evn.v{version}')
-        return dotenv_values(dotenv_path=target_env_file_path)
+        return dotenv_values(dotenv_path=target_env_file_path, interpolate=False)
 
 
 def get_last_version() -> int:
@@ -19,6 +19,9 @@ def get_last_version() -> int:
         f for f in os.listdir(env_bkp_dir)
         if f.startswith('.env.v') and os.path.isfile(os.path.join(env_bkp_dir, f))
     ]
+
+    if len(files) == 0:
+        return 0
 
     return int(max(map(lambda f: f[6:], files)))
 
@@ -55,9 +58,9 @@ def get_all_backups() -> dict:
     return version_to_config
 
 
-def set_new_env(config: dict) -> int:
+def upload_env_dict(config: dict) -> int:
     with open(env_file_path, 'w') as f:
-        for key, value in config:
+        for key, value in config.items():
             f.write(f'{key}={value}\n')
 
     return create_backup()

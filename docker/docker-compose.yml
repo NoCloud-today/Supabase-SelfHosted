@@ -17,6 +17,8 @@ services:
       timeout: 5s
       interval: 5s
       retries: 3
+    ports:
+      - 127.0.0.1:3000:3000
     depends_on:
       analytics:
         condition: service_healthy
@@ -433,23 +435,23 @@ services:
 
   admin:
     container_name: supabase-admin
-    image: ghcr.io/mhlvdenis/supabase-admin
-    # build: ../admin
+    image: ghcr.io/mhlvdenis/supabase-admin:latest
+    build: ../admin
     restart: always
     ports:
-      - 127.0.0.1:30239:8000
+      - 127.0.0.1:20215:8000
     volumes:
-      - ./.env:/supabase/config/.env
-      - ./env_bkp:/supabase/config/env_bkp
+      - .:/supabase/docker
       - admin-upload-data:/app/uploaded_files
       - admin-web-static:/app/.web/_static
     environment:
-      ENV_FILE_PATH: /supabase/config/.env
-      ENV_BKP_DIR: /supabase/config/env_bkp
+      ENV_FILE_PATH: /supabase/docker/.env
+      ENV_BKP_DIR: /supabase/docker/env_bkp
+      RESTART_FLAG_FILE: /supabase/docker/restart.txt
 
   caddy:
     container_name: supabase-caddy
-    image: caddy:latest
+    image: caddy:2.7
     restart: unless-stopped
     ports:
       - 80:80

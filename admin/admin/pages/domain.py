@@ -1,24 +1,19 @@
 """The home page of the app."""
 
-from admin import styles
 from admin.templates import template
-from admin.system import load_env_dict
+from admin.system import load_env_dict, restart
 
-import os
 import reflex as rx
-from dotenv import dotenv_values
 
 BASE_DOMAIN = 'BASE_DOMAIN'
-
-path_to_supabase_env = os.getenv('ENV_FILE_PATH')
-config_dict = dotenv_values(dotenv_path=path_to_supabase_env)
 
 
 class DomainPageState(rx.State):
     form_data: dict[str, str] = load_env_dict()
 
     def restart(self, form_data: dict):
-        pass
+        self.form_data[BASE_DOMAIN] = form_data[BASE_DOMAIN]
+        restart(self.form_data)
 
 
 def dynamic_form() -> rx.Component:
