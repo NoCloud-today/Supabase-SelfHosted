@@ -437,7 +437,7 @@ services:
   admin:
     container_name: supabase-admin
     image: ghcr.io/mhlvdenis/supabase-admin:latest
-    #build: ../admin
+    build: ../admin
     restart: always
     ports:
       - 127.0.0.1:20215:8000
@@ -464,6 +464,8 @@ services:
       AUTH_DOMAIN: ${AUTH_DOMAIN}
       API_EXTERNAL_DOMAIN: ${API_EXTERNAL_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
+      ADMIN_BASIC_USER: ${ADMIN_BASIC_USER}
+      ADMIN_BASIC_PASS: ${ADMIN_BASIC_PASS}
     volumes:
       - ${CADDY_CONFIG_FILE}:/etc/caddy/Caddyfile:Z
       - ./volumes/caddy/data:/data:Z
