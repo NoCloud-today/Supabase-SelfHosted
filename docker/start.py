@@ -8,6 +8,7 @@ from dotenv import dotenv_values
 
 def get_self_ip_address() -> str:
     url = 'https://api.ipify.org/?format=json'
+
     return requests.get(url).json()['ip']
 
 
@@ -19,9 +20,16 @@ def generate_caddy_secrets():
     subprocess.run(['docker', 'pull', 'caddy:2.7'])
     os.system(f'docker run caddy:2.7 caddy hash-password --plaintext \"{password}\" > caddy_hash_password')
     with open('caddy_hash_password', 'r') as f:
-        caddy_hash_password = f.readlines()[0]
+        caddy_hash_password = f.readlines()[0][:-1]
 
     return username, password, caddy_hash_password
+
+
+def generate_postgres_password():
+    symbols = string.ascii_lowercase + '1234567890'
+    password = ''.join(random.choice(symbols) for _ in range(40))
+
+    return password
 
 
 if __name__ == "__main__":
@@ -29,11 +37,13 @@ if __name__ == "__main__":
 
     ip = get_self_ip_address()
     caddy_secrets = generate_caddy_secrets()
+    postgres_password = generate_postgres_password()
 
     env: dict[str, str] = dotenv_values(dotenv_path='.env.example', interpolate=False)
     env['ADMIN_DOMAIN'] = ip
     env['ADMIN_BASIC_USER'] = caddy_secrets[0]
     env['ADMIN_BASIC_PASS'] = caddy_secrets[2]
+    env['POSTGRES_PASSWORD'] = postgres_password
     with open('.env', 'w') as f:
         for key, value in env.items():
             f.write(f"{key}='{value}'\n")
