@@ -8,6 +8,11 @@
 
     root * /srv
     route {
+        basicauth {
+            # Username: admin, password: admin
+            admin $2a$14$.ExRTK/ZOhwv492LQ2ybe.HTMkWtk69P6mwQoD8xnjleZb.Np4Ske
+        }
+
     	try_files {path} {path}/ /404.html
     	file_server
     }

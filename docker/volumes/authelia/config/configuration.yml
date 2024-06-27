@@ -85,10 +85,11 @@ access_control:
   ## resource if there is no policy to be applied to the user.
   default_policy: deny
   rules:
-    - domain:
-        - $DASHBOARD_AUTH_DOMAIN
+    - domain: $AUTH_DOMAIN
       policy: bypass
     - domain: $DASHBOARD_DOMAIN
+      policy: one_factor
+    - domain: $ADMIN_DOMAIN
       policy: one_factor
 
 session:

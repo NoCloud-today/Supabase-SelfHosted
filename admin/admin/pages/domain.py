@@ -13,7 +13,8 @@ class DomainPageState(rx.State):
 
     def restart(self, form_data: dict):
         self.form_data[BASE_DOMAIN] = form_data[BASE_DOMAIN]
-        restart(self.form_data)
+        restart(self.form_data.copy())
+        self.form_data = load_env_dict()
 
 
 def dynamic_form() -> rx.Component:

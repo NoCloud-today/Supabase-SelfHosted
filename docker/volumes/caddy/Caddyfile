@@ -1,6 +1,6 @@
 (secure) {
-    forward_auth {args[0]} authelia:9091 {
-        uri /api/verify?rd=https://{$DASHBOARD_AUTH_DOMAIN}
+    forward_auth authelia:9091 {
+        uri /api/verify?rd=https://{$AUTH_DOMAIN}
         copy_headers Remote-User Remote-Groups Remote-Name Remote-Email
     }
 }
@@ -15,12 +15,13 @@
 
     root * /srv
     route {
+        import secure
     	try_files {path} {path}/ /404.html
     	file_server
     }
 }
 
-{$DASHBOARD_AUTH_DOMAIN} {
+{$AUTH_DOMAIN} {
     reverse_proxy authelia:9091
 }
 
@@ -38,7 +39,7 @@
     }
 
     handle /* {
-        import secure *
+        import secure
         reverse_proxy studio:3000
     }
 }

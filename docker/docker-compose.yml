@@ -2,6 +2,7 @@ name: supabase
 version: "3.8"
 
 services:
+
   studio:
     container_name: supabase-studio
     image: supabase/studio:20240301-0942bfe
@@ -436,7 +437,7 @@ services:
   admin:
     container_name: supabase-admin
     image: ghcr.io/mhlvdenis/supabase-admin:latest
-    build: ../admin
+    #build: ../admin
     restart: always
     ports:
       - 127.0.0.1:20215:8000
@@ -460,7 +461,7 @@ services:
     network_mode: ${CADDY_NETWORK_MODE}
     environment:
       ADMIN_DOMAIN: ${ADMIN_DOMAIN}
-      DASHBOARD_AUTH_DOMAIN: ${DASHBOARD_AUTH_DOMAIN}
+      AUTH_DOMAIN: ${AUTH_DOMAIN}
       API_EXTERNAL_DOMAIN: ${API_EXTERNAL_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
     volumes:
@@ -480,8 +481,9 @@ services:
     environment:
       X_AUTHELIA_CONFIG_FILTERS: expand-env,template
       BASE_DOMAIN: ${BASE_DOMAIN}
-      DASHBOARD_AUTH_DOMAIN: ${DASHBOARD_AUTH_DOMAIN}
+      AUTH_DOMAIN: ${AUTH_DOMAIN}
       DASHBOARD_DOMAIN: ${DASHBOARD_DOMAIN}
+      ADMIN_DOMAIN: ${ADMIN_DOMAIN}
     volumes:
       - ./volumes/authelia/config:/config
 
